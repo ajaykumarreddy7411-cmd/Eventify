@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { deleteEvent } from "@/actions/serveractions";
 import {
   FaCalendarAlt,
   FaMapMarkerAlt,
@@ -29,6 +30,15 @@ const EventDetailsPage = ({ event }) => {
     );
   }
 
+  const handleDelete = async (eventId) => {
+    try {
+      const res = await deleteEvent(eventId);
+      if (res.message) router.push("/dashboard");
+    } catch (err) {
+      console.error("Error deleting event:", err);
+    }
+  };
+
   return (
     <section className="relative min-h-screen bg-gray-900 text-white py-16 px-6 md:px-16 flex items-center justify-center">
       {/* Blurred Background */}
@@ -53,7 +63,6 @@ const EventDetailsPage = ({ event }) => {
           <div className="flex items-center gap-2">
             <h1 className="text-4xl text-yellow-400">{event.title}</h1>
           </div>
-          
 
           <div className="flex flex-col md:flex-row gap-6 text-gray-200 mt-2">
             <div className="flex items-center gap-2">
@@ -85,7 +94,7 @@ const EventDetailsPage = ({ event }) => {
             </button>
             <button
               hidden={hidden}
-              onClick={() => router.push(`/dashboard/delete/${event.id}`)}
+              onClick={() => handleDelete(event.id)}
               className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/20 backdrop-blur-sm text-white font-semibold hover:bg-white/10 hover:text-white transition-all duration-300 shadow-md"
             >
               <FaTrash /> Delete

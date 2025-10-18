@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { deleteEvent } from "@/actions/serveractions";
 import {
   FaEdit,
   FaTrash,
@@ -51,12 +52,14 @@ const DashboardPage = () => {
 
   const handleDelete = async (eventId) => {
     try {
-      const res = await fetch("/api/events", {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: eventId }),
-      });
-      if (res.ok) setUserEvents((prev) => prev.filter((e) => e.id !== eventId));
+      // const res = await fetch("/api/events", {
+      //   method: "DELETE",
+      //   headers: { "Content-Type": "application/json" },
+      //   body: JSON.stringify({ id: eventId }),
+      // });
+
+      const res=await deleteEvent(eventId);
+      if (res.message) setUserEvents((prev) => prev.filter((e) => e.id !== eventId));
     } catch (err) {
       console.error("Error deleting event:", err);
     }

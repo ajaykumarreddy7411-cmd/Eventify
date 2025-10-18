@@ -4,6 +4,7 @@ import { FcGoogle } from "react-icons/fc";
 import { FaGithub } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
+import { addUser } from "@/actions/serveractions";
 
 const RegisterPage = () => {
   const router = useRouter();
@@ -25,15 +26,16 @@ const RegisterPage = () => {
     setLoading(true);
 
     try {
-      const res = await fetch("/api/auth/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
+      // const res = await fetch("/api/auth/register", {
+      //   method: "POST",
+      //   headers: { "Content-Type": "application/json" },
+      //   body: JSON.stringify(formData),
+      // });
+      const res=await addUser(formData);
 
-      const data = await res.json();
+      // const data = await res.json();
 
-      if (!res.ok) {
+      if (!res.message) {
         throw new Error(data.error || "Registration failed");
       }
 

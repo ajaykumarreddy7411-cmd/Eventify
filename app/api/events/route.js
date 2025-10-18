@@ -17,6 +17,10 @@ export async function GET() {
 export async function POST(request) {
   try {
     const { title, date, location, description, image, seats, created_by,price } = await request.json();
+    
+    
+   
+    
 
     if (!title || !date || !location || !description || !image || !seats || !created_by || !price) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
@@ -29,12 +33,13 @@ export async function POST(request) {
     // Insert new event into the database
     
     const [result] = await db.execute(
-      'INSERT INTO events (title, date, location, description, image, seats, available_seats, created_by,price) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-      [title, date, location, description, image, seats, seats, created_by,price]
+      'INSERT INTO events (title, date, location, description, image, seats, available_seats, created_by, price) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+      [title, date, location, description, image, seats, seats, created_by, price]
     );
     
     return NextResponse.json({ id: result.insertId, message: 'Event created successfully' });
   } catch (error) {
+    
     return NextResponse.json({ error: 'Failed to create event' }, { status: 500 });
   }
 }

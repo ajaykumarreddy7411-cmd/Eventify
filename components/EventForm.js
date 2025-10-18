@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import GlassLoader from "./GlassLoader";
+import { editOrCreateEvent } from "@/actions/serveractions";
 
 export default function EventForm({ mode = "create", eventData = {} }) {
   const router = useRouter();
@@ -40,28 +40,37 @@ export default function EventForm({ mode = "create", eventData = {} }) {
   }, [mode, eventData]);
 
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    const { name, value, type } = e.target;
+
+    // ✅ Ensure numeric fields stay numbers (prevents rounding/loss issues)
+    const newValue =
+      type === "number" ? (value === "" ? "" : Number(value)) : value;
+
+    setForm({ ...form, [name]: newValue });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      const method = mode === "edit" ? "PUT" : "POST";
-      const url =
-        mode === "edit" ? `/api/events/${eventData.id}` : `/api/events`;
+      // const method = mode === "edit" ? "PUT" : "POST";
+      // const url =
+      //   mode === "edit" ? `/api/events/${eventData.id}` : `/api/events`;
 
-      const res = await fetch(url, {
-        method,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...form,
-          created_by: session?.user.email,
-        }),
-      });
+      // const res = await fetch(url, {
+      //   method,
+      //   headers: { "Content-Type": "application/json" },
+      //   body: JSON.stringify({
+      //     ...form,
+      //     created_by: session?.user.email,
+      //   }),
+      // });
 
-      const data = await res.json();
-      if (res.ok) {
+      const email = session?.user.email;
+
+      const data = await editOrCreateEvent(email, form, mode, eventData.id);
+
+      if (data.message) {
         setStatusType("success");
         setStatusMessage(
           `Event ${mode === "edit" ? "updated" : "created"} successfully!`
