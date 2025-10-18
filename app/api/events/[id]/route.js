@@ -25,10 +25,18 @@ export async function GET(request, { params }) {
 export async function PUT(request, { params }) {
   try {
     const { id } = params;
-    const { title, date, location, description, image, seats,price } =
+    const { title, date, location, description, image, seats, price } =
       await request.json();
 
-    if (!title || !date || !location || !description || !image || !seats || !price) {
+    if (
+      !title ||
+      !date ||
+      !location ||
+      !description ||
+      !image ||
+      !seats ||
+      !price
+    ) {
       return NextResponse.json(
         { error: "Missing required fields" },
         { status: 400 }
@@ -42,10 +50,44 @@ export async function PUT(request, { params }) {
       );
     }
 
+    let available_seats = seats;
+
+    // Fetch current seats and available_seats to adjust accordingly
+
+    const [rows] = await db.execute(
+      "SELECT seats, available_seats FROM events WHERE id = ?",
+      [id]
+    );
+    const oldSeats = rows[0].seats;
+    const oldAvailable = rows[0].available_seats;
+    const booked = oldSeats - oldAvailable;
+
+    if (oldSeats !== seats) {
+      const newSeats = seats;
+      // Compute new available seats based on booked count
+      let newAvailable = newSeats - booked;
+
+      // Prevent negatives or overflow
+      if (newAvailable < 0) newAvailable = 0;
+      if (newAvailable > newSeats) newAvailable = newSeats;
+
+      available_seats = newAvailable;
+    }
+
     // Update the event in the database
     await db.execute(
-      "UPDATE events SET title = ?, date = ?, location = ?, description = ?, image = ?, seats = ?, price = ? WHERE id = ?",
-      [title, date, location, description, image, seats,price, id]
+      "UPDATE events SET title = ?, date = ?, location = ?, description = ?, image = ?, seats = ?, available_seats = ?, price = ? WHERE id = ?",
+      [
+        title,
+        date,
+        location,
+        description,
+        image,
+        seats,
+        available_seats,
+        price,
+        id,
+      ]
     );
 
     return NextResponse.json({ message: "Event updated successfully" });

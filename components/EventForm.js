@@ -2,10 +2,11 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
+import GlassLoader from "./GlassLoader";
 
 export default function EventForm({ mode = "create", eventData = {} }) {
   const router = useRouter();
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
 
   const [form, setForm] = useState({
     title: "",
@@ -21,6 +22,10 @@ export default function EventForm({ mode = "create", eventData = {} }) {
   const [statusType, setStatusType] = useState("success"); // success / error
 
   useEffect(() => {
+    // if (status === "unauthenticated") {
+    //   router.push("/login");
+    // }
+
     if (mode === "edit" && eventData) {
       setForm({
         title: eventData.title || "",
@@ -43,7 +48,8 @@ export default function EventForm({ mode = "create", eventData = {} }) {
 
     try {
       const method = mode === "edit" ? "PUT" : "POST";
-      const url = mode === "edit" ? `/api/events/${eventData.id}` : `/api/events`;
+      const url =
+        mode === "edit" ? `/api/events/${eventData.id}` : `/api/events`;
 
       const res = await fetch(url, {
         method,
@@ -57,7 +63,9 @@ export default function EventForm({ mode = "create", eventData = {} }) {
       const data = await res.json();
       if (res.ok) {
         setStatusType("success");
-        setStatusMessage(`Event ${mode === "edit" ? "updated" : "created"} successfully!`);
+        setStatusMessage(
+          `Event ${mode === "edit" ? "updated" : "created"} successfully!`
+        );
         setTimeout(() => router.push("/events"), 1500);
       } else {
         setStatusType("error");
@@ -71,11 +79,19 @@ export default function EventForm({ mode = "create", eventData = {} }) {
 
   const backgroundImage = mode === "edit" ? eventData.image : "/eventify.png";
 
+  // if (status === "loading") {
+  //   return (
+  //     <div className="flex items-center justify-center min-h-screen bg-slate-900">
+  //       <GlassLoader size={80} borderWidth={5} />
+  //     </div>
+  //   );
+  // }
+
   return (
     <section className="relative min-h-screen flex items-center justify-center py-16 px-6 md:px-16 bg-gray-900">
       {/* Background Image */}
       <div
-        className="absolute inset-0 bg-cover bg-center filter blur-xl opacity-30"
+        className="fixed inset-0 bg-cover bg-center filter blur-xl opacity-30"
         style={{ backgroundImage: `url(${backgroundImage})` }}
       />
 
@@ -86,22 +102,26 @@ export default function EventForm({ mode = "create", eventData = {} }) {
         </h1>
 
         <form onSubmit={handleSubmit} className="space-y-5">
-          {["title", "location", "description", "image", "seats", "price"].map((field) => (
-            <div key={field}>
-              <label className="block text-white font-medium mb-1 capitalize">
-                {field === "image" ? "Image URL" : field}
-              </label>
-              <input
-                type={field === "seats" || field === "price" ? "number" : "text"}
-                name={field}
-                value={form[field]}
-                onChange={handleChange}
-                placeholder={`Enter event ${field}`}
-                className="w-full px-4 py-2 rounded-xl bg-white/20 text-white placeholder-white/70 backdrop-blur-sm outline-none focus:ring-2 focus:ring-indigo-400 border border-white/20"
-                required={field !== "image"}
-              />
-            </div>
-          ))}
+          {["title", "location", "description", "image", "seats", "price"].map(
+            (field) => (
+              <div key={field}>
+                <label className="block text-white font-medium mb-1 capitalize">
+                  {field === "image" ? "Image URL" : field}
+                </label>
+                <input
+                  type={
+                    field === "seats" || field === "price" ? "number" : "text"
+                  }
+                  name={field}
+                  value={form[field]}
+                  onChange={handleChange}
+                  placeholder={`Enter event ${field}`}
+                  className="w-full px-4 py-2 rounded-xl bg-white/20 text-white placeholder-white/70 backdrop-blur-sm outline-none focus:ring-2 focus:ring-indigo-400 border border-white/20"
+                  required={field !== "image"}
+                />
+              </div>
+            )
+          )}
 
           {/* Date Field */}
           <div>
@@ -128,7 +148,9 @@ export default function EventForm({ mode = "create", eventData = {} }) {
         {statusMessage && (
           <div
             className={`mt-4 p-3 rounded-lg text-center font-semibold ${
-              statusType === "success" ? "bg-green-600 text-white" : "bg-red-600 text-white"
+              statusType === "success"
+                ? "bg-green-600 text-white"
+                : "bg-red-600 text-white"
             }`}
           >
             {statusMessage}

@@ -33,7 +33,7 @@ const EventDetailsPage = ({ event }) => {
     <section className="relative min-h-screen bg-gray-900 text-white py-16 px-6 md:px-16 flex items-center justify-center">
       {/* Blurred Background */}
       <div
-        className="absolute inset-0 bg-cover bg-center filter blur-xl opacity-40"
+        className="fixed inset-0 bg-cover bg-center filter blur-xl opacity-40"
         style={{ backgroundImage: `url(${event.image})` }}
       />
 

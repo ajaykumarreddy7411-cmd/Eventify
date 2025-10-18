@@ -56,9 +56,9 @@ const RegisterPage = () => {
     }
   };
 
-  // const handleGitHubSignUp = () => {
-  //   signIn("github", { callbackUrl: "/dashboard" });
-  // };
+  const handleGitHubSignUp = () => {
+    signIn("github", { callbackUrl: "/dashboard" });
+  };
 
   return (
     <section className="min-h-[85vh] flex items-center justify-center bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500 px-6">
@@ -125,6 +125,7 @@ const RegisterPage = () => {
           </button>
 
           <button
+          onClick={handleGitHubSignUp}
             
             className="w-full flex items-center justify-center gap-3 bg-gray-900 text-white font-semibold py-3 rounded-lg hover:bg-gray-800 transition-all duration-300"
           >

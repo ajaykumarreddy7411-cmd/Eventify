@@ -66,7 +66,7 @@ const DashboardPage = () => {
     <section className="relative min-h-screen bg-gradient-to-r from-purple-900 via-indigo-900 to-pink-900 py-16 px-4 md:px-16 text-white">
       {/* Background Blur */}
       <div
-        className="absolute inset-0 bg-cover bg-center filter blur-xl opacity-40"
+        className="fixed inset-0 bg-cover bg-center filter blur-xl opacity-40"
         style={{ backgroundImage: `url(/eventify.png)` }}
       />
 

@@ -1,6 +1,6 @@
 "use client";
-import React, { use, useRef,useState,useEffect } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import React, { useRef, useState, useEffect } from "react";
+import { motion } from "framer-motion";
 import {
   CalendarDays,
   ArrowRight,
@@ -11,33 +11,18 @@ import {
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 
-// Main component
 const EventHomePage = () => {
-  const parallaxRef = useRef(null);
   const router = useRouter();
-  const [hidden,setHidden]=useState(false);
-  const { data: session,status } = useSession();
+  const [hidden, setHidden] = useState(false);
+  const { data: session, status } = useSession();
 
   useEffect(() => {
-    if(status==="unauthenticated"){
+    if (status === "unauthenticated") {
       setHidden(false);
-    }else{
+    } else {
       setHidden(true);
     }
-  
-    
-  }, [])
-  
-  
-
-
-  const { scrollYProgress } = useScroll({
-    target: parallaxRef,
-    offset: ["start end", "end start"],
-  });
-
-  // Create a parallax effect for the background image
-  const backgroundY = useTransform(scrollYProgress, [0, 1], ["-20%", "20%"]);
+  }, [status]);
 
   return (
     <>
@@ -46,6 +31,9 @@ const EventHomePage = () => {
         {/* Background decorative blobs */}
         <div className="absolute top-[-10%] left-[-10%] w-96 h-96 bg-pink-500/50 rounded-full filter blur-3xl opacity-50 animate-blob"></div>
         <div className="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-indigo-500/50 rounded-full filter blur-3xl opacity-50 animate-blob animation-delay-4000"></div>
+
+        {/* Gradient overlay at bottom to blend with next section */}
+        <div className="absolute bottom-0 left-0 w-full h-40 md:h-60 bg-gradient-to-t from-gray-900/90 to-transparent pointer-events-none z-10"></div>
 
         {/* Left Text Section */}
         <motion.div
@@ -79,12 +67,19 @@ const EventHomePage = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 1.8 }}
           >
-            <button onClick={()=>router.push("/events")} className="bg-white/90 backdrop-blur-sm hover:bg-white text-purple-700 font-semibold px-6 py-3 rounded-full flex items-center justify-center gap-2 transition-all duration-300 transform hover:scale-105 shadow-lg">
+            <button
+              onClick={() => router.push("/events")}
+              className="bg-white/90 backdrop-blur-sm hover:bg-white text-purple-700 font-semibold px-6 py-3 rounded-full flex items-center justify-center gap-2 transition-all duration-300 transform hover:scale-105 shadow-lg"
+            >
               <CalendarDays className="w-5 h-5" />
               Explore Events
             </button>
 
-            <button hidden={hidden} onClick={()=>router.push("/login")} className="border border-white/50 bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white rounded-full px-6 py-3 flex items-center justify-center gap-2 transition-all duration-300 transform hover:scale-105">
+            <button
+              hidden={hidden}
+              onClick={() => router.push("/login")}
+              className="border border-white/50 bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white rounded-full px-6 py-3 flex items-center justify-center gap-2 transition-all duration-300 transform hover:scale-105"
+            >
               Get Started <ArrowRight className="w-5 h-5" />
             </button>
           </motion.div>
@@ -127,27 +122,31 @@ const EventHomePage = () => {
         </motion.div>
       </section>
 
-      {/* SECTION 2: PARALLAX & FEATURES */}
-      <section
-        ref={parallaxRef}
-        className="relative h-[120vh] bg-gray-900 text-white overflow-hidden"
-      >
-        {/* Parallax Background Image */}
-        <motion.div
-          className="absolute inset-0 z-0"
+      <section className="relative md:h-[120vh] text-white overflow-hidden">
+        {/* Desktop Background (fixed) */}
+        <div
+          className="hidden md:block absolute inset-0 bg-cover bg-center bg-fixed z-0"
           style={{
-            backgroundImage: `url('https://imgs.search.brave.com/hdwsDiOLI7hlrkyONHaMaICoFy-mdvXv2WjI4JSSNiQ/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWcu/ZnJlZXBpay5jb20v/cHJlbWl1bS1waG90/by9jcm93ZC1tdXNp/Yy1jb25jZXJ0XzEw/NDg5NDQtMTcyMTE4/NjEuanBnP3NlbXQ9/YWlzX2h5YnJpZCZ3/PTc0MCZxPTgw')`,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            y: backgroundY,
+            backgroundImage:
+              "url('https://imgs.search.brave.com/hdwsDiOLI7hlrkyONHaMaICoFy-mdvXv2WjI4JSSNiQ/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWcu/ZnJlZXBpay5jb20v/cHJlbWl1bS1waG90/by9jcm93ZC1tdXNp/Yy1jb25jZXJ0XzEw/NDg5NDQtMTcyMTE4/NjEuanBnP3NlbXQ9/YWlzX2h5YnJpZCZ3/PTc0MCZxPTgw')",
           }}
         />
+        {/* Mobile Background (scroll parallax) */}
+        <div
+          className="block md:hidden absolute inset-0 bg-cover bg-center z-0"
+          style={{
+            backgroundImage:
+              "url('https://imgs.search.brave.com/hdwsDiOLI7hlrkyONHaMaICoFy-mdvXv2WjI4JSSNiQ/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWcu/ZnJlZXBpay5jb20v/cHJlbWl1bS1waG90/by9jcm93ZC1tdXNp/Yy1jb25jZXJ0XzEw/NDg5NDQtMTcyMTE4/NjEuanBnP3NlbXQ9/YWlzX2h5YnJpZCZ3/PTc0MCZxPTgw')",
+          }}
+        />
+
+        {/* Overlay */}
         <div className="absolute inset-0 bg-black/70 z-10"></div>
 
         {/* Content */}
-        <div className="relative z-20 flex flex-col items-center justify-center h-full p-6 text-center">
+        <div className="relative z-20 flex flex-col items-center justify-center h-full pt-32 md:pt-0 p-6 text-center">
           <motion.h2
-            className="text-4xl md:text-5xl font-bold mb-6"
+            className="text-4xl md:text-5xl font-bold mb-6 mt-10 md:mt-0"
             initial={{ opacity: 0, y: -50 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.5 }}
@@ -168,7 +167,6 @@ const EventHomePage = () => {
 
           {/* Feature Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-6xl">
-            {/* Card 1 - Modern UI */}
             <motion.div
               className="bg-white/10 backdrop-blur-md p-8 rounded-2xl border border-white/20"
               initial={{ opacity: 0, y: 50 }}
@@ -186,7 +184,6 @@ const EventHomePage = () => {
               </p>
             </motion.div>
 
-            {/* Card 2 - All Events in One Place */}
             <motion.div
               className="bg-white/10 backdrop-blur-md p-8 rounded-2xl border border-white/20"
               initial={{ opacity: 0, y: 50 }}
@@ -207,7 +204,6 @@ const EventHomePage = () => {
               </p>
             </motion.div>
 
-            {/* Card 3 - Secure & Reliable */}
             <motion.div
               className="bg-white/10 backdrop-blur-md p-8 rounded-2xl border border-white/20"
               initial={{ opacity: 0, y: 50 }}

@@ -3,10 +3,12 @@ import React, { useState, useEffect } from "react";
 import { FaCalendarAlt, FaMapMarkerAlt, FaPlus, FaTag } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
+import { useSession } from "next-auth/react";
 
 export default function EventsPage({ events = [] }) {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
+  const {data:session,status}=useSession();
 
   // Simulate loading (you can remove if you already have async fetch)
   useEffect(() => {
@@ -18,7 +20,7 @@ export default function EventsPage({ events = [] }) {
     <section className="relative min-h-screen bg-gray-900 text-white py-16 px-6 md:px-16 overflow-hidden">
       {/* Background Image with Blur */}
       <div
-        className="absolute inset-0 bg-cover bg-center filter blur-xl opacity-40"
+        className="fixed inset-0 bg-cover bg-center filter blur-xl opacity-40"
         style={{ backgroundImage: `url(/eventify.png)` }}
       />
 
@@ -41,7 +43,7 @@ export default function EventsPage({ events = [] }) {
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.96 }}
-            onClick={() => router.push("/dashboard/create")}
+            onClick={() => {status==="authenticated" ? router.push("/dashboard/create") : router.push("/login")}}
             className="flex items-center gap-2 bg-gradient-to-r from-yellow-400 via-pink-400 to-purple-500 text-black font-semibold px-6 py-3 rounded-full shadow-lg hover:shadow-yellow-400/40 hover:text-white transition-all duration-500"
           >
             <FaPlus className="text-lg" /> Create Event
@@ -131,10 +133,10 @@ export default function EventsPage({ events = [] }) {
                     className="w-full mt-5 bg-gradient-to-r from-indigo-500 to-purple-600 text-white py-3 rounded-lg hover:shadow-md hover:shadow-purple-400/30 transition-all duration-300"
                     onClick={(e) => {
                       e.stopPropagation(); // prevent card click
-                      router.push(`/events/${event.id}/register`);
+                      router.push(`/events/${event.id}/bookNow`);
                     }}
                   >
-                    Register
+                    BookNow
                   </motion.button>
                 </div>
               </motion.div>
