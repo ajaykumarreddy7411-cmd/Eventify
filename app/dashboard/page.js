@@ -28,7 +28,6 @@ const DashboardPage = () => {
 
   useEffect(() => {
     if (status === "unauthenticated") router.push("/login");
-
     if (status === "authenticated") {
       const getEvents = async () => {
         try {
@@ -42,6 +41,7 @@ const DashboardPage = () => {
         }
       };
       getEvents();
+       console.log(session?.user?.created_at);
     }
   }, [status, router, user.email]);
 

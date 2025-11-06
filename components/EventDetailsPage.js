@@ -13,7 +13,7 @@ import { useSession } from "next-auth/react";
 
 const EventDetailsPage = ({ event }) => {
   const router = useRouter();
-  const { data: session } = useSession();
+  const { data: session,status } = useSession();
   const [hidden, setHidden] = useState(true);
 
   useEffect(() => {
@@ -100,13 +100,20 @@ const EventDetailsPage = ({ event }) => {
               <FaTrash /> Delete
             </button>
           </div>
-
-          <button
-            onClick={() => router.back()}
-            className="mt-4 flex items-center gap-2 text-indigo-400 font-semibold hover:text-indigo-300 transition"
-          >
-            <FaArrowLeft /> Back
-          </button>
+          <div className="flex justify-between">
+            <button
+              onClick={() => router.back()}
+              className="mt-4 flex items-center gap-2 text-indigo-400 font-semibold hover:text-indigo-300 transition"
+            >
+              <FaArrowLeft /> Back
+            </button>
+            <button
+              onClick={() => status==="authenticated" ? router.push(`/events/${event.id}/bookNow`) : router.push("/login")}
+              className="px-4 py-3 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-lg hover:shadow-md hover:shadow-purple-400/30 transition-all duration-300"
+            >
+              Book Now
+            </button>
+          </div>
         </div>
       </div>
     </section>

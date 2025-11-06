@@ -13,6 +13,7 @@ const BookNowPage = () => {
   const [ticketCount, setTicketCount] = useState(1);
   const [showPopup, setShowPopup] = useState(false);
   const [bookingInfo, setBookingInfo] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchEvent = async () => {
@@ -21,18 +22,12 @@ const BookNowPage = () => {
         setEvent(data);
       } catch (error) {
         console.error("Error fetching event:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
     fetchEvent();
   }, [id]);
-
-  if (!event) {
-    return (
-      <div className="flex items-center justify-center min-h-screen text-white text-xl">
-        Loading event details...
-      </div>
-    );
-  }
 
   const handleIncrease = () => {
     if (ticketCount < event.available_seats) setTicketCount(ticketCount + 1);
@@ -42,7 +37,7 @@ const BookNowPage = () => {
     if (ticketCount > 1) setTicketCount(ticketCount - 1);
   };
 
-  const totalPrice = event.price * ticketCount;
+  const totalPrice = event?.price * ticketCount;
 
   const handleBookNow = async () => {
     const res = await updateSeats(id, ticketCount);
@@ -87,12 +82,35 @@ const BookNowPage = () => {
     });
   };
 
+  // 🌟 Loading Skeleton
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="w-80 h-80 bg-white/10 rounded-3xl animate-pulse flex flex-col justify-center items-center text-white"
+        >
+          <div className="w-20 h-20 border-4 border-white/30 border-t-white rounded-full animate-spin mb-4"></div>
+          <p className="text-white/70 text-lg tracking-wide">Loading event...</p>
+        </motion.div>
+      </div>
+    );
+  }
+
+  if (!event) {
+    return (
+      <div className="flex items-center justify-center min-h-screen text-white text-xl">
+        Failed to load event.
+      </div>
+    );
+  }
+
   return (
     <div className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 overflow-hidden">
-      
       {/* Go Back Button */}
       <button
-        onClick={() => router.push("/events")}
+        onClick={() => router.back()}
         className="fixed top-20 left-4 z-50 flex items-center gap-2 bg-white/20 hover:bg-white/30 text-white px-3 py-2 rounded-xl backdrop-blur-md shadow-md transition"
       >
         <ArrowLeft size={18} /> Go Back
@@ -170,7 +188,7 @@ const BookNowPage = () => {
         </div>
       </motion.div>
 
-      {/* Simple Popup */}
+      {/* Popup Section */}
       {showPopup && bookingInfo && (
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}

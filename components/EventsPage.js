@@ -133,7 +133,8 @@ export default function EventsPage({ events = [] }) {
                     className="w-full mt-5 bg-gradient-to-r from-indigo-500 to-purple-600 text-white py-3 rounded-lg hover:shadow-md hover:shadow-purple-400/30 transition-all duration-300"
                     onClick={(e) => {
                       e.stopPropagation(); // prevent card click
-                      router.push(`/events/${event.id}/bookNow`);
+                      status==="authenticated" ? router.push(`/events/${event.id}/bookNow`) : router.push("/login");
+                     
                     }}
                   >
                     BookNow

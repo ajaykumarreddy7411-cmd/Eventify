@@ -86,7 +86,7 @@ export default function Navbar() {
           {/* Links */}
           <div className="flex items-center gap-5 ml-8 font-medium">
             <Link href="/events" className="hover:text-yellow-300 transition duration-200">Events</Link>
-            <Link href="/dashboard" className="hover:text-yellow-300 transition duration-200">Dashboard</Link>
+            <Link href={status==="authenticated" ? "/dashboard" : "/login"} className="hover:text-yellow-300 transition duration-200">Dashboard</Link>
 
             {session?.user ? (
               <div className="flex items-center gap-3 flex-wrap">

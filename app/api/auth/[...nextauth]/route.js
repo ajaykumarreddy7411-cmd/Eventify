@@ -59,10 +59,17 @@ export const authOptions = {
 
           if (rows.length === 0) {
             // 2️⃣ Insert new GitHub user
-            await db.execute(
+            const [result] = await db.execute(
               "INSERT INTO users (full_name, email, password, provider) VALUES (?, ?, NULL, ?)",
               [user.name, user.email, account.provider]
             );
+            const insertId = result.id;
+            const [rows2] = await db.execute(
+              "SELECT * FROM users WHERE id = ?",
+              [insertId]
+            );
+            user.id=rows2[0].id;
+            user.created_at=rows2[0].created_at;
             console.log("✅ New GitHub user added:", user.email);
           } else {
             console.log("ℹ️ GitHub user already exists:", user.email);
