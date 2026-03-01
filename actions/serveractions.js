@@ -1,13 +1,13 @@
 "use server";
 
 export const fetchAllEvents = async () => {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/events`);
+  const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/events`,{cache:'no-store'});
   const data = await res.json();
   return data;
 };
 
 export const fetchOneEvent = async (id) => {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/events/${id}`);
+  const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/events/${id}`,{cache:'no-store'});
   const data = await res.json();
   return data;
 };

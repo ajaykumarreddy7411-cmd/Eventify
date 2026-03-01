@@ -63,6 +63,7 @@ export const authOptions = {
               "INSERT INTO users (full_name, email, password, provider) VALUES (?, ?, NULL, ?)",
               [user.name, user.email, account.provider]
             );
+            //i chnaged this to insertId from insertId to id for adding new created-at option for github users
             const insertId = result.id;
             const [rows2] = await db.execute(
               "SELECT * FROM users WHERE id = ?",
