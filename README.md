@@ -18,7 +18,6 @@
 
 ## 📸 Screenshots
 
-*(Replace the placeholder image paths below with the actual paths to your screenshots)*
 
 ### 🏠 Home Page
 ![Home Page Screenshot](./public/screenshots/home-page.png)
@@ -120,32 +119,6 @@ npm run dev
 ```
 
 Your app will be running at [http://localhost:3000](http://localhost:3000).
-
----
-
-## 🔌 API Endpoints
-
-- **`GET /api/health`**: Simple health check verifying the server is up.
-- **`GET /api/db-test`**: Validates the MySQL database connection and returns a sample query execution result.
-
----
-
-## 🔮 Future Roadmap
-
-We are continuously working on improving Eventify. Planned features include:
-
-- **💳 Razorpay Payment Integration**: For handling paid event bookings securely.
-- **🗃️ Prisma ORM**: Transitioning to Prisma for more elegant schema management and type-safe database queries.
-- **🐳 Dockerization**: Containerization of the Next.js app and the MySQL database using `docker-compose`.
-- **🧪 Automated Testing**: Adding robust unit and integration testing.
-
----
-
-## 🐛 Troubleshooting
-
-- **Database Connection Error**: Double-check `DATABASE_URL` format. Remember to URL-encode special characters in passwords (e.g., `@` becomes `%40`).
-- **NextAuth Errors**: Ensure `NEXTAUTH_SECRET` is set and valid. Verify GitHub OAuth callback URLs in your GitHub Developer settings. If `Unexpected token <` shows, it usually means the server returned an HTML error page; check the terminal logs.
-- **Prisma Error**: "Missing required environment variable: DATABASE_URL" —  Ensure `DATABASE_URL` is defined in `.env.local` and properly formatted (once Prisma is integrated).
 
 ---
 
